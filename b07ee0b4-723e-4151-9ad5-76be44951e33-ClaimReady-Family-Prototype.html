@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f5b53">
+  <title>ClaimReady Family Prototype</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17312e;
+      --muted: #627470;
+      --line: #dbe6e2;
+      --surface: #ffffff;
+      --background: #eef5f2;
+      --brand: #0f5b53;
+      --brand-2: #167267;
+      --brand-pale: #e3f2ed;
+      --gold: #d89b28;
+      --gold-pale: #fff3d7;
+      --red: #a8473c;
+      --red-pale: #fde9e5;
+      --shadow: 0 18px 55px rgba(21, 58, 53, .18);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(75, 157, 142, .25), transparent 34rem),
+        var(--background);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+
+    .phone {
+      width: min(100%, 430px);
+      min-height: 100vh;
+      margin: 0 auto;
+      background: #f8fbfa;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @media (min-width: 560px) {
+      body { padding: 28px 0; }
+      .phone {
+        min-height: 850px;
+        height: min(850px, calc(100vh - 56px));
+        border-radius: 36px;
+        border: 8px solid #17312e;
+        box-shadow: var(--shadow);
+      }
+    }
+
+    .screen {
+      height: 100%;
+      min-height: inherit;
+      overflow-y: auto;
+      padding-bottom: 104px;
+    }
+
+    .hero {
+      padding: max(26px, env(safe-area-inset-top)) 22px 26px;
+      color: white;
+      background:
+        radial-gradient(circle at 96% 3%, rgba(255, 255, 255, .16), transparent 9rem),
+        linear-gradient(145deg, var(--brand), #0a443e);
+      border-radius: 0 0 30px 30px;
+    }
+
+    .brand-row, .section-heading, .claim-top, .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: #fff;
+      color: var(--brand);
+      font-weight: 900;
+      letter-spacing: -.04em;
+      box-shadow: 0 7px 18px rgba(0, 0, 0, .16);
+    }
+
+    .brand-name { font-weight: 800; font-size: 18px; }
+    .brand-sub { opacity: .76; font-size: 12px; margin-top: 2px; }
+
+    .privacy-chip {
+      border: 1px solid rgba(255, 255, 255, .3);
+      background: rgba(255, 255, 255, .12);
+      color: white;
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    .hero h1 {
+      margin: 30px 0 6px;
+      font-size: 28px;
+      line-height: 1.08;
+      letter-spacing: -.035em;
+    }
+
+    .hero p { margin: 0; opacity: .78; font-size: 14px; }
+
+    .content { padding: 20px 18px; }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      margin-top: -8px;
+    }
+
+    .metric {
+      min-height: 94px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px 12px;
+      box-shadow: 0 5px 15px rgba(21, 58, 53, .05);
+    }
+
+    .metric strong { display: block; font-size: 24px; margin-bottom: 7px; }
+    .metric span { color: var(--muted); font-size: 11px; line-height: 1.2; }
+
+    .alert {
+      margin: 18px 0 22px;
+      display: flex;
+      gap: 12px;
+      padding: 15px;
+      border-radius: 18px;
+      background: var(--gold-pale);
+      border: 1px solid #f0d18e;
+    }
+
+    .alert-icon {
+      flex: 0 0 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      background: #fff;
+      border-radius: 12px;
+      font-size: 20px;
+    }
+
+    .alert strong { display: block; font-size: 13px; margin-bottom: 3px; }
+    .alert p { margin: 0; color: #74551f; font-size: 12px; line-height: 1.35; }
+
+    .section-heading { margin: 4px 2px 11px; }
+    .section-heading h2 { margin: 0; font-size: 17px; }
+    .text-button {
+      border: 0;
+      background: transparent;
+      color: var(--brand-2);
+      font-weight: 700;
+      font-size: 12px;
+      padding: 6px;
+    }
+
+    .claim-card {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 19px;
+      padding: 15px;
+      margin-bottom: 10px;
+      text-align: left;
+      color: var(--ink);
+      box-shadow: 0 5px 14px rgba(21, 58, 53, .045);
+    }
+
+    .claim-card:active { transform: scale(.99); }
+    .claim-person { font-weight: 800; font-size: 14px; }
+    .claim-provider { color: var(--muted); font-size: 12px; margin-top: 4px; }
+    .claim-amount { font-weight: 800; font-size: 14px; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 12px;
+      border-radius: 999px;
+      padding: 6px 9px;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .badge.waiting { background: var(--gold-pale); color: #795817; }
+    .badge.ready { background: var(--brand-pale); color: var(--brand); }
+    .badge.submitted { background: #e8edff; color: #3c4d92; }
+    .badge.denied { background: var(--red-pale); color: var(--red); }
+
+    .progress {
+      height: 5px;
+      border-radius: 99px;
+      background: #edf1ef;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+
+    .progress > span {
+      display: block;
+      height: 100%;
+      background: var(--brand-2);
+      border-radius: inherit;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 34px 20px;
+      border: 1px dashed #bdccc7;
+      border-radius: 20px;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 10px 12px max(12px, env(safe-area-inset-bottom));
+      background: rgba(255,255,255,.96);
+      border-top: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+      z-index: 10;
+    }
+
+    .nav-button {
+      border: 0;
+      background: transparent;
+      color: #7b8986;
+      padding: 5px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .nav-button span { display: block; font-size: 20px; margin-bottom: 3px; }
+    .nav-button.active { color: var(--brand); }
+    .nav-button.add span {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      margin: -16px auto 3px;
+      color: white;
+      background: var(--brand);
+      box-shadow: 0 8px 18px rgba(15, 91, 83, .28);
+    }
+
+    .page-header {
+      padding: max(25px, env(safe-area-inset-top)) 18px 20px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .page-header h1 { margin: 0; font-size: 24px; letter-spacing: -.03em; }
+    .page-header p { margin: 5px 0 0; color: var(--muted); font-size: 13px; }
+
+    .back {
+      border: 0;
+      background: var(--brand-pale);
+      color: var(--brand);
+      width: 38px;
+      height: 38px;
+      border-radius: 13px;
+      margin-bottom: 14px;
+      font-weight: 900;
+    }
+
+    .detail-block {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 17px;
+      margin-bottom: 13px;
+    }
+
+    .detail-block h2 { margin: 0 0 13px; font-size: 16px; }
+    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .detail-grid label { display: block; color: var(--muted); font-size: 10px; margin-bottom: 3px; }
+    .detail-grid strong { font-size: 13px; }
+
+    .check-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 0;
+      border-top: 1px solid #edf1ef;
+      background: transparent;
+      padding: 13px 0;
+      text-align: left;
+      color: var(--ink);
+    }
+
+    .check-row:first-of-type { border-top: 0; }
+    .check {
+      flex: 0 0 25px;
+      height: 25px;
+      border: 2px solid #b7c7c2;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 13px;
+    }
+
+    .check-row.done .check { background: var(--brand-2); border-color: var(--brand-2); }
+    .check-row.done .check-copy { color: var(--muted); text-decoration: line-through; }
+    .check-copy strong { display: block; font-size: 13px; }
+    .check-copy span { display: block; color: var(--muted); font-size: 11px; margin-top: 3px; }
+
+    .primary, .secondary, .danger {
+      width: 100%;
+      border-radius: 15px;
+      padding: 14px 16px;
+      font-weight: 800;
+      border: 0;
+    }
+
+    .primary { background: var(--brand); color: white; }
+    .secondary { background: var(--brand-pale); color: var(--brand); }
+    .danger { background: var(--red-pale); color: var(--red); }
+
+    .form { display: grid; gap: 14px; }
+    .field label { display: block; font-size: 12px; font-weight: 800; margin: 0 0 6px 2px; }
+    .field input, .field select {
+      width: 100%;
+      border: 1px solid #bdccc7;
+      border-radius: 14px;
+      padding: 13px 14px;
+      background: white;
+      color: var(--ink);
+      outline: none;
+    }
+
+    .field input:focus, .field select:focus {
+      border-color: var(--brand-2);
+      box-shadow: 0 0 0 3px rgba(22, 114, 103, .12);
+    }
+
+    .field-note { font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+    .info-card {
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 12px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+    }
+
+    .info-card h2 { font-size: 15px; margin: 0 0 8px; }
+    .info-card p, .info-card li { color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .info-card ul { padding-left: 19px; margin-bottom: 0; }
+    .info-card a { color: var(--brand); font-weight: 800; }
+
+    .toast {
+      position: absolute;
+      left: 50%;
+      bottom: 94px;
+      transform: translate(-50%, 20px);
+      opacity: 0;
+      pointer-events: none;
+      width: max-content;
+      max-width: calc(100% - 36px);
+      padding: 11px 15px;
+      border-radius: 999px;
+      background: #17312e;
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      transition: .2s ease;
+      z-index: 20;
+    }
+
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  </style>
+</head>
+<body>
+  <main class="phone" aria-label="ClaimReady Family mobile prototype">
+    <div id="screen" class="screen"></div>
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <button class="nav-button active" data-route="home"><span>⌂</span>Home</button>
+      <button class="nav-button" data-route="claims"><span>▤</span>Claims</button>
+      <button class="nav-button add" data-route="add"><span>＋</span>Add</button>
+      <button class="nav-button" data-route="help"><span>?</span>Help</button>
+    </nav>
+    <div id="toast" class="toast" role="status"></div>
+  </main>
+
+  <script>
+    const STORAGE_KEY = 'claimready-family-prototype-v1';
+    const seedClaims = [
+      {
+        id: 101,
+        person: 'Child A',
+        provider: 'Speech & Occupational Therapy',
+        serviceDate: '2026-08-13',
+        amount: 145,
+        insurance: 'UMR',
+        status: 'waiting',
+        documents: { receipt: true, bill: true, eob: false, review: false }
+      },
+      {
+        id: 102,
+        person: 'Child B',
+        provider: 'Pediatric Clinic',
+        serviceDate: '2026-07-29',
+        amount: 82.50,
+        insurance: 'UMR',
+        status: 'ready',
+        documents: { receipt: true, bill: true, eob: true, review: false }
+      },
+      {
+        id: 103,
+        person: 'Spouse',
+        provider: 'Outpatient Imaging',
+        serviceDate: '2026-06-18',
+        amount: 210,
+        insurance: 'Other health insurance',
+        status: 'submitted',
+        submittedDate: '2026-07-07',
+        documents: { receipt: true, bill: true, eob: true, review: true }
+      }
+    ];
+
+    let state = loadState();
+    let route = 'home';
+    let selectedId = null;
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        return saved ? JSON.parse(saved) : { claims: seedClaims };
+      } catch {
+        return { claims: seedClaims };
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function money(value) {
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value || 0);
+    }
+
+    function friendlyDate(value) {
+      if (!value) return 'Not entered';
+      return new Date(`${value}T12:00:00`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function statusLabel(status) {
+      return ({
+        waiting: 'Waiting on primary EOB',
+        ready: 'Ready to file',
+        submitted: 'Submitted to CHAMPVA',
+        denied: 'Needs attention'
+      })[status] || 'Draft';
+    }
+
+    function completion(claim) {
+      const complete = Object.values(claim.documents || {}).filter(Boolean).length;
+      return Math.round((complete / 4) * 100);
+    }
+
+    function metric(status) {
+      return state.claims.filter(c => c.status === status).length;
+    }
+
+    function claimCard(claim) {
+      const pct = completion(claim);
+      return `
+        <button class="claim-card" data-claim="${claim.id}">
+          <div class="claim-top">
+            <div>
+              <div class="claim-person">${escapeHtml(claim.person)}</div>
+              <div class="claim-provider">${escapeHtml(claim.provider)} · ${friendlyDate(claim.serviceDate)}</div>
+            </div>
+            <div class="claim-amount">${money(claim.amount)}</div>
+          </div>
+          <span class="badge ${claim.status}">● ${statusLabel(claim.status)}</span>
+          <div class="progress" aria-label="${pct}% of documents ready"><span style="width:${pct}%"></span></div>
+        </button>`;
+    }
+
+    function renderHome() {
+      const recent = [...state.claims].sort((a, b) => b.id - a.id).slice(0, 3);
+      return `
+        <header class="hero">
+          <div class="brand-row">
+            <div class="brand">
+              <div class="brand-mark">CR</div>
+              <div><div class="brand-name">ClaimReady Family</div><div class="brand-sub">CHAMPVA claim organizer</div></div>
+            </div>
+            <div class="privacy-chip">🔒 On this device</div>
+          </div>
+          <h1>Keep every reimbursement moving.</h1>
+          <p>Documents, deadlines and claim status—without the paper chase.</p>
+        </header>
+        <section class="content">
+          <div class="metrics">
+            <div class="metric"><strong>${metric('ready')}</strong><span>Ready<br>to file</span></div>
+            <div class="metric"><strong>${metric('waiting')}</strong><span>Waiting<br>on EOB</span></div>
+            <div class="metric"><strong>${metric('submitted')}</strong><span>Submitted<br>claims</span></div>
+          </div>
+          <div class="alert">
+            <div class="alert-icon">⏳</div>
+            <div><strong>Don’t lose the filing window</strong><p>CHAMPVA generally requires claims within one year of the date of care. This prototype will calculate exact reminders later.</p></div>
+          </div>
+          <div class="section-heading"><h2>Recent claims</h2><button class="text-button" data-route="claims">View all</button></div>
+          ${recent.length ? recent.map(claimCard).join('') : '<div class="empty">No claims yet. Tap Add to begin.</div>'}
+        </section>`;
+    }
+
+    function renderClaims() {
+      return `
+        <header class="page-header"><h1>All claims</h1><p>${state.claims.length} claim${state.claims.length === 1 ? '' : 's'} stored on this device</p></header>
+        <section class="content">
+          ${state.claims.length ? state.claims.map(claimCard).join('') : '<div class="empty">No claims yet. Tap Add to begin.</div>'}
+        </section>`;
+    }
+
+    function renderAdd() {
+      const today = new Date().toISOString().slice(0, 10);
+      return `
+        <header class="page-header"><h1>Add a claim</h1><p>Start with the visit; collect documents as they arrive.</p></header>
+        <section class="content">
+          <form id="claim-form" class="form">
+            <div class="field"><label for="person">Beneficiary</label><input id="person" name="person" required placeholder="Example: Child A"></div>
+            <div class="field"><label for="provider">Provider or facility</label><input id="provider" name="provider" required placeholder="Example: Speech therapy clinic"></div>
+            <div class="field"><label for="serviceDate">Date of service</label><input id="serviceDate" name="serviceDate" type="date" max="${today}" required></div>
+            <div class="field"><label for="insurance">Primary insurance</label><input id="insurance" name="insurance" value="UMR" required></div>
+            <div class="field"><label for="amount">Amount paid</label><input id="amount" name="amount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0.00" required></div>
+            <div class="field"><label for="status">Current stage</label>
+              <select id="status" name="status">
+                <option value="waiting">Waiting on primary EOB</option>
+                <option value="ready">Ready to file</option>
+                <option value="submitted">Submitted to CHAMPVA</option>
+                <option value="denied">Needs attention</option>
+              </select>
+              <div class="field-note">Do not enter Social Security numbers in this prototype.</div>
+            </div>
+            <button class="primary" type="submit">Save claim</button>
+          </form>
+        </section>`;
+    }
+
+    function renderDetail(claim) {
+      const items = [
+        ['receipt', 'Proof of payment', 'Receipt or statement marked paid'],
+        ['bill', 'Itemized billing statement', 'Provider details, charges and billing codes'],
+        ['eob', `${claim.insurance || 'Primary insurance'} EOB`, 'Must match the provider and date of service'],
+        ['review', 'Packet reviewed', 'Names, dates and amounts match before filing']
+      ];
+      return `
+        <header class="page-header">
+          <button class="back" data-route="claims" aria-label="Back to claims">←</button>
+          <h1>${escapeHtml(claim.person)}</h1><p>${escapeHtml(claim.provider)}</p>
+        </header>
+        <section class="content">
+          <div class="detail-block">
+            <div class="detail-grid">
+              <div><label>DATE OF SERVICE</label><strong>${friendlyDate(claim.serviceDate)}</strong></div>
+              <div><label>AMOUNT PAID</label><strong>${money(claim.amount)}</strong></div>
+              <div><label>PRIMARY INSURANCE</label><strong>${escapeHtml(claim.insurance || 'Not entered')}</strong></div>
+              <div><label>CLAIM STAGE</label><strong>${statusLabel(claim.status)}</strong></div>
+            </div>
+          </div>
+          <div class="detail-block">
+            <h2>Required documents</h2>
+            ${items.map(([key, title, copy]) => `
+              <button class="check-row ${claim.documents[key] ? 'done' : ''}" data-check="${key}" data-id="${claim.id}">
+                <span class="check">${claim.documents[key] ? '✓' : ''}</span>
+                <span class="check-copy"><strong>${title}</strong><span>${copy}</span></span>
+              </button>`).join('')}
+          </div>
+          <div class="detail-block">
+            <h2>Next action</h2>
+            <p style="font-size:12px;color:var(--muted);line-height:1.5;margin:0 0 14px">${nextAction(claim)}</p>
+            <a href="https://www.va.gov/family-and-caregiver-benefits/health-and-disability/champva/file-champva-claim-10-7959a/" target="_blank" rel="noopener"><button class="secondary">Open official VA filing page</button></a>
+          </div>
+          <button class="danger" data-delete="${claim.id}">Delete this prototype claim</button>
+        </section>`;
+    }
+
+    function renderHelp() {
+      return `
+        <header class="page-header"><h1>Help & privacy</h1><p>What this prototype does—and deliberately does not do.</p></header>
+        <section class="content">
+          <article class="info-card"><h2>What ClaimReady does</h2><p>Organizes visit information, required documents, filing stages and reminders so families can prepare complete reimbursement claims.</p></article>
+          <article class="info-card"><h2>What it does not do</h2><p>It does not determine coverage, promise reimbursement, provide medical or legal advice, or submit anything to the Department of Veterans Affairs.</p></article>
+          <article class="info-card"><h2>Privacy boundary</h2><ul><li>Prototype data stays in this browser.</li><li>No account, cloud database or analytics.</li><li>Do not enter Social Security numbers.</li><li>A production app would add device encryption and biometric protection.</li></ul></article>
+          <article class="info-card"><h2>Official source</h2><p>Always confirm requirements through the <a href="https://www.va.gov/resources/how-to-file-a-champva-claim/" target="_blank" rel="noopener">VA’s CHAMPVA claim instructions</a>.</p></article>
+          <button id="reset-demo" class="danger">Reset prototype data</button>
+        </section>`;
+    }
+
+    function nextAction(claim) {
+      if (!claim.documents.receipt) return 'Add proof that the provider was paid.';
+      if (!claim.documents.bill) return 'Request an itemized billing statement from the provider.';
+      if (!claim.documents.eob) return `Wait for or download the ${escapeHtml(claim.insurance || 'primary insurance')} explanation of benefits.`;
+      if (!claim.documents.review) return 'Review the packet and confirm that names, dates, provider and amounts match.';
+      if (claim.status === 'submitted') return 'Keep the submission confirmation and monitor for the CHAMPVA decision.';
+      return 'The document checklist is complete. Use the official VA page to file the claim.';
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>'"]/g, char => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+      })[char]);
+    }
+
+    function setRoute(next, id = null) {
+      route = next;
+      selectedId = id;
+      render();
+    }
+
+    function render() {
+      const screen = document.getElementById('screen');
+      if (route === 'home') screen.innerHTML = renderHome();
+      if (route === 'claims') screen.innerHTML = renderClaims();
+      if (route === 'add') screen.innerHTML = renderAdd();
+      if (route === 'help') screen.innerHTML = renderHelp();
+      if (route === 'detail') {
+        const claim = state.claims.find(c => c.id === selectedId);
+        if (!claim) return setRoute('claims');
+        screen.innerHTML = renderDetail(claim);
+      }
+
+      document.querySelectorAll('.nav-button').forEach(button => {
+        button.classList.toggle('active', button.dataset.route === route || (route === 'detail' && button.dataset.route === 'claims'));
+      });
+      screen.scrollTop = 0;
+      bindEvents();
+    }
+
+    function bindEvents() {
+      document.querySelectorAll('[data-route]').forEach(button => {
+        button.onclick = () => setRoute(button.dataset.route);
+      });
+
+      document.querySelectorAll('[data-claim]').forEach(button => {
+        button.onclick = () => setRoute('detail', Number(button.dataset.claim));
+      });
+
+      document.querySelectorAll('[data-check]').forEach(button => {
+        button.onclick = () => {
+          const claim = state.claims.find(c => c.id === Number(button.dataset.id));
+          claim.documents[button.dataset.check] = !claim.documents[button.dataset.check];
+          if (Object.values(claim.documents).every(Boolean) && claim.status === 'waiting') claim.status = 'ready';
+          saveState();
+          render();
+          toast('Checklist updated');
+        };
+      });
+
+      const form = document.getElementById('claim-form');
+      if (form) {
+        form.onsubmit = event => {
+          event.preventDefault();
+          const data = new FormData(form);
+          const status = data.get('status');
+          const baseDocs = status === 'ready' || status === 'submitted';
+          state.claims.unshift({
+            id: Date.now(),
+            person: data.get('person').trim(),
+            provider: data.get('provider').trim(),
+            serviceDate: data.get('serviceDate'),
+            insurance: data.get('insurance').trim(),
+            amount: Number(data.get('amount')),
+            status,
+            documents: { receipt: baseDocs, bill: baseDocs, eob: baseDocs, review: status === 'submitted' }
+          });
+          saveState();
+          setRoute('claims');
+          toast('Claim saved on this device');
+        };
+      }
+
+      const reset = document.getElementById('reset-demo');
+      if (reset) reset.onclick = () => {
+        if (confirm('Reset all prototype data?')) {
+          state = { claims: structuredClone(seedClaims) };
+          saveState();
+          render();
+          toast('Prototype reset');
+        }
+      };
+
+      document.querySelectorAll('[data-delete]').forEach(button => {
+        button.onclick = () => {
+          if (confirm('Delete this prototype claim?')) {
+            state.claims = state.claims.filter(c => c.id !== Number(button.dataset.delete));
+            saveState();
+            setRoute('claims');
+            toast('Claim deleted');
+          }
+        };
+      });
+    }
+
+    let toastTimer;
+    function toast(message) {
+      const element = document.getElementById('toast');
+      element.textContent = message;
+      element.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => element.classList.remove('show'), 2200);
+    }
+
+    render();
+  </script>
+</body>
+</html>
